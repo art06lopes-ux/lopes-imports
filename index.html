@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Lopes Imports Pro - Sistema de Gestão de Vendas">
+  <meta name="author" content="Lopes Imports">
+  <title>Lopes Imports Pro V7 - Gestão de Vendas</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <h1>🏪 Lopes Imports Pro</h1>
+        <p class="subtitle">Sistema de Gestão de Vendas V7</p>
+        <div class="clock-container">
+          <span id="clock"></span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Novo Produto Section -->
+      <section class="card">
+        <h2>📦 Novo Produto</h2>
+        <form id="produtoForm" onsubmit="return false;">
+          <div class="form-group">
+            <input id="nome" type="text" placeholder="Nome do produto" required>
+          </div>
+          <div class="form-group">
+            <input id="compra" type="number" placeholder="Preço de compra" step="0.01" min="0" required>
+          </div>
+          <div class="form-group">
+            <input id="venda" type="number" placeholder="Preço de venda" step="0.01" min="0" required>
+          </div>
+          <div class="form-group">
+            <input id="qtd" type="number" placeholder="Quantidade" min="1" required>
+          </div>
+          <button type="button" class="btn btn-primary" onclick="add()">➕ Adicionar Produto</button>
+        </form>
+      </section>
+
+      <!-- Statistics Section -->
+      <section class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">💵</div>
+          <div class="stat-label">Hoje</div>
+          <div class="stat-value">R$ <span id="hoje">0.00</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📅</div>
+          <div class="stat-label">Semana</div>
+          <div class="stat-value">R$ <span id="semana">0.00</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🗓️</div>
+          <div class="stat-label">Mês</div>
+          <div class="stat-value">R$ <span id="mes">0.00</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📈</div>
+          <div class="stat-label">Ano</div>
+          <div class="stat-value">R$ <span id="ano">0.00</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🏦</div>
+          <div class="stat-label">Total</div>
+          <div class="stat-value">R$ <span id="total">0.00</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📦</div>
+          <div class="stat-label">Estoque</div>
+          <div class="stat-value"><span id="estoque">0</span> itens</div>
+        </div>
+      </section>
+
+      <!-- Produtos List Section -->
+      <section class="card">
+        <h2>📋 Lista de Produtos</h2>
+        <div id="lista" class="produtos-list"></div>
+      </section>
+
+      <!-- Gráfico Section -->
+      <section class="card">
+        <h2>📊 Histórico Mensal do Ano</h2>
+        <div class="chart-container">
+          <canvas id="graf" width="700" height="260"></canvas>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>&copy; 2026 Lopes Imports Pro. Todos os direitos reservados.</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
