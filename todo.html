@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Aplicativo de Lista de Tarefas com Armazenamento Local">
+  <title>Minha Lista de Tarefas</title>
+  <link rel="stylesheet" href="todo-styles.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <h1>✓ Minha Lista de Tarefas</h1>
+      <p class="subtitle">Organize suas atividades com facilidade</p>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Input Section -->
+      <section class="input-section">
+        <div class="input-container">
+          <input 
+            type="text" 
+            id="taskInput" 
+            placeholder="Digite uma nova tarefa..."
+            class="task-input"
+          >
+          <button class="btn btn-add" onclick="adicionarTarefa()">➕ Adicionar</button>
+        </div>
+        <div class="filter-buttons">
+          <button class="filter-btn active" onclick="filtrarTarefas('todas')">Todas (📊 <span id="total">0</span>)</button>
+          <button class="filter-btn" onclick="filtrarTarefas('ativas')">Ativas (⏳ <span id="ativas">0</span>)</button>
+          <button class="filter-btn" onclick="filtrarTarefas('concluidas')">Concluídas (✅ <span id="concluidas">0</span>)</button>
+        </div>
+      </section>
+
+      <!-- Statistics -->
+      <section class="stats-section">
+        <div class="stat-item">
+          <span class="stat-icon">📊</span>
+          <div>
+            <div class="stat-label">Total de Tarefas</div>
+            <div class="stat-value" id="statTotal">0</div>
+          </div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-icon">⏳</span>
+          <div>
+            <div class="stat-label">Pendentes</div>
+            <div class="stat-value" id="statAtivas">0</div>
+          </div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-icon">✅</span>
+          <div>
+            <div class="stat-label">Concluídas</div>
+            <div class="stat-value" id="statConcluidas">0</div>
+          </div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-icon">📈</span>
+          <div>
+            <div class="stat-label">Progresso</div>
+            <div class="stat-value" id="statProgresso">0%</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tasks List -->
+      <section class="tasks-section">
+        <div id="tarefasList" class="tarefas-list"></div>
+        <div id="emptyState" class="empty-state">
+          <div class="empty-icon">📝</div>
+          <p>Nenhuma tarefa por aqui!</p>
+          <p class="empty-subtitle">Adicione uma tarefa para começar</p>
+        </div>
+      </section>
+
+      <!-- Action Buttons -->
+      <section class="action-buttons">
+        <button class="btn btn-secondary" onclick="marcarTodasConcluidas()">✓ Marcar Todas como Concluídas</button>
+        <button class="btn btn-danger" onclick="limparConcluidas()">🗑️ Limpar Concluídas</button>
+        <button class="btn btn-danger" onclick="limparTodas()">🗑️ Limpar Tudo</button>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>✨ Organize, conclua e celebre seus objetivos!</p>
+      <p class="footer-info">Suas tarefas são salvas automaticamente no navegador</p>
+    </footer>
+  </div>
+
+  <script src="todo-app.js"></script>
+</body>
+</html>
