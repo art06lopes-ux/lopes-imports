@@ -1,4 +1,11 @@
-// Data Management - Isolado por usuário
+const SUPABASE_URL = 'https://knrhtoexdpmlehdndjfv.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_wxOJ_KPfshvDmt2q94crYQ_r1ara4ta';
+
+const supabase = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
 function getUserDataKey(key) {
   const session = getSession();
   if (!session) return key;
