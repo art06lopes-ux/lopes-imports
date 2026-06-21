@@ -1,6 +1,28 @@
-// Data Management
-let produtos = JSON.parse(localStorage.getItem('lopes_v7_produtos') || '[]');
-let vendas = JSON.parse(localStorage.getItem('lopes_v7_vendas') || '[]');
+// Data Management - Isolado por usuário
+function getUserDataKey(key) {
+  const session = getSession();
+  if (!session) return key;
+  return `${session.username}_${key}`;
+}
+
+function getProdutos() {
+  try {
+    return JSON.parse(localStorage.getItem(getUserDataKey('lopes_v7_produtos')) || '[]');
+  } catch (e) {
+    return [];
+  }
+}
+
+function getVendas() {
+  try {
+    return JSON.parse(localStorage.getItem(getUserDataKey('lopes_v7_vendas')) || '[]');
+  } catch (e) {
+    return [];
+  }
+}
+
+let produtos = getProdutos();
+let vendas = getVendas();
 
 // Session helpers
 function getSession() {
@@ -27,10 +49,9 @@ function getUsers() {
   try { return JSON.parse(localStorage.getItem('lopes_v7_users') || '[]'); } catch(e) { return []; }
 }
 
-// Save data to localStorage
 function save() {
-  localStorage.setItem('lopes_v7_produtos', JSON.stringify(produtos));
-  localStorage.setItem('lopes_v7_vendas', JSON.stringify(vendas));
+  localStorage.setItem(getUserDataKey('lopes_v7_produtos'), JSON.stringify(produtos));
+  localStorage.setItem(getUserDataKey('lopes_v7_vendas'), JSON.stringify(vendas));
   render();
 }
 
@@ -315,7 +336,9 @@ function atualizarRelogio() {
 
 // Initialize
 window.addEventListener('load', () => {
-  const session = getSession();
+  const session = getSession();// Recarregar dados do usuário atual
+produtos = getProdutos();
+vendas = getVendas();
   if (!session) {
     window.location.href = 'login.html';
     return;
