@@ -43,6 +43,7 @@ async function register(username, email, password) {
 }
 
 async function login(username, password) {
+  // Always fetch users fresh from localStorage to ensure we get newly created users
   const users = getUsers();
   const user = users.find(u => u.username === username);
   if (!user) return { ok:false, message: 'Usuário não encontrado' };
