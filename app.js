@@ -155,6 +155,9 @@ function ehAnoAtual(data) {
 
 // Render all products
 function render() {
+  // Remove products with zero stock from the list
+  produtos = produtos.filter(p => p.qtd > 0);
+  
   let html = '';
   let estoque = 0;
 
