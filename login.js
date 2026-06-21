@@ -25,7 +25,7 @@ function createDefaultAdminIfNeeded() {
     hashPassword('1327').then(h => {
       users.push({ username: 'donolopes', email: 'admin@local', passwordHash: h, role: 'admin', createdAt: new Date().toISOString() });
       saveUsers(users);
-      console.log('Default admin created (username: donolopes). Change password after first login.');
+      console.log('Default admin created (username: donolopes, password: 1327). Change password after first login.');
     });
   }
 }
