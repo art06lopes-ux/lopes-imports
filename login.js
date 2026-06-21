@@ -21,10 +21,11 @@ function createDefaultAdminIfNeeded() {
   // display or expose credentials anywhere in the UI.
   const users = getUsers();
   if (users.length === 0) {
-    hashPassword('admin123').then(h => {
-      users.push({ username: 'admin', email: 'admin@local', passwordHash: h, role: 'admin', createdAt: new Date().toISOString() });
+    // Creating default admin with credentials provided by repository owner
+    hashPassword('1327').then(h => {
+      users.push({ username: 'donolopes', email: 'admin@local', passwordHash: h, role: 'admin', createdAt: new Date().toISOString() });
       saveUsers(users);
-      console.log('Default admin created (username: admin). Change password after first login.');
+      console.log('Default admin created (username: donolopes). Change password after first login.');
     });
   }
 }
