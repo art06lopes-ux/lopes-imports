@@ -14,11 +14,8 @@ Sistema de Gestão de Vendas moderno e responsivo. Essa versão adiciona autenti
 
 ## Como usar (rápido)
 
-1. Abra `login.html` para registrar um usuário ou usar o usuário padrão.
-2. Usuário padrão criado automaticamente (somente se não houver usuários):
-   - Usuário: `admin`
-   - Senha: `admin123`
-3. Após login você será redirecionado para a aplicação (`index.html`).
+1. Abra `login.html` para fazer login.
+2. A criação de novos usuários é feita pelo administrador através do painel de usuários (`users.html`).
 
 ## Observações
 - Dados de produtos e vendas são armazenados em localStorage: `lopes_v7_produtos` e `lopes_v7_vendas`.

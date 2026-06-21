@@ -15,12 +15,16 @@ function getUsers() {
 function saveUsers(users) { localStorage.setItem('lopes_v7_users', JSON.stringify(users)); }
 
 function createDefaultAdminIfNeeded() {
+  // WARNING: For security, avoid default known credentials in production.
+  // This function will create a default admin only if no users exist.
+  // We keep this to allow initial access during development, but it does not
+  // display or expose credentials anywhere in the UI.
   const users = getUsers();
   if (users.length === 0) {
     hashPassword('admin123').then(h => {
       users.push({ username: 'admin', email: 'admin@local', passwordHash: h, role: 'admin', createdAt: new Date().toISOString() });
       saveUsers(users);
-      console.log('Usuário admin criado');
+      console.log('Default admin created (username: admin). Change password after first login.');
     });
   }
 }
@@ -29,7 +33,7 @@ async function register(username, email, password) {
   if (!username || !password) return { ok: false, message: 'Preencha usuário e senha' };
   const users = getUsers();
   if (users.find(u => u.username === username)) return { ok:false, message: 'Usuário já existe' };
-  // do not allow registering as admin
+  // registering via UI is disabled in the public app; this function kept for admin panel
   const role = 'user';
   const hash = await hashPassword(password);
   users.push({ username, email, passwordHash: hash, role, createdAt: new Date().toISOString() });
@@ -52,14 +56,35 @@ async function login(username, password) {
 // UI wiring
 createDefaultAdminIfNeeded();
 
-document.getElementById('btnRegister').addEventListener('click', async () => {
-  const username = document.getElementById('username').value.trim();
-  const email = document.getElementById('email').value.trim();
-  const password = document.getElementById('password').value;
-  const res = await register(username, email, password);
-  if (!res.ok) alert('❌ ' + res.message);
-  else { alert('✅ Usuário registrado. Agora faça login.'); }
-});
+// Process invite links: ?invite=1&u=username&p=password&e=email
+(async function handleInvite() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('invite') === '1' && params.get('u') && params.get('p')) {
+      const username = params.get('u');
+      const password = params.get('p');
+      const email = params.get('e') || '';
+      const users = getUsers();
+      if (!users.find(u => u.username === username)) {
+        const h = await hashPassword(password);
+        users.push({ username, email, passwordHash: h, role: 'user', createdAt: new Date().toISOString() });
+        saveUsers(users);
+        console.log('Conta criada via convite');
+      } else {
+        console.log('Usuário do convite já existe no dispositivo');
+      }
+
+      // Auto-login
+      const res = await login(username, password);
+      if (res.ok) {
+        window.location.href = 'index.html';
+      } else {
+        console.log('Não foi possível logar automaticamente:', res.message);
+      }
+    }
+  } catch (e) { console.error('Erro processando convite', e); }
+})();
+
 
 document.getElementById('btnLogin').addEventListener('click', async () => {
   const username = document.getElementById('username').value.trim();
@@ -69,7 +94,7 @@ document.getElementById('btnLogin').addEventListener('click', async () => {
   window.location.href = 'index.html';
 });
 
-// Allow enter key
+// Allow enter key for username/password
 ['username','password'].forEach(id => {
   const el = document.getElementById(id);
   if (el) el.addEventListener('keypress', (e) => { if (e.key === 'Enter') document.getElementById('btnLogin').click(); });
