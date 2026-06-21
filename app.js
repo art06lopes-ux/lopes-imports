@@ -1,10 +1,8 @@
 // Data Management - Isolado por usuário
 function getUserDataKey(key) {
-const
-session = getSession();
-if (!session) return key;
-return
-'Stsession. username}_${key} ;
+  const session = getSession();
+  if (!session) return key;
+  return `${session.username}_${key}`;
 }
 
 function getProdutos() {
