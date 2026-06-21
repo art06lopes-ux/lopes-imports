@@ -1,87 +1,33 @@
-# 🏪 Lopes Imports Pro V7
+# Gerenciamento de Vendas (anteriormente Lopes Imports Pro V7)
 
-Sistema de Gestão de Vendas moderno e responsivo para a Lopes Imports.
+Sistema de Gestão de Vendas moderno e responsivo. Essa versão adiciona autenticação local (login/senha) para testes e uma nova página de vendas com receita total, lucro total e lista de produtos vendidos.
 
-## ✨ Funcionalidades
+> Nota: A autenticação local usa armazenamento no navegador (localStorage) e hashing SHA-256. Isso é suficiente para uma demo, mas não é recomendado para produção. Para um sistema seguro e multi-usuário, use um backend + banco de dados ou um provedor como Firebase Auth.
 
-- ✅ **Cadastro de Produtos** - Adicione novos produtos com preço de compra, venda e quantidade
-- ✅ **Gestão de Vendas** - Registre vendas e acompanhe o estoque em tempo real
-- ✅ **Estatísticas Detalhadas** - Visualize lucros diários, semanais, mensais, anuais e totais
-- ✅ **Gráfico Mensal** - Acompanhe visualmente o desempenho do ano
-- ✅ **Cálculo de Margem** - Veja a margem de lucro de cada produto
-- ✅ **Armazenamento Local** - Todos os dados são salvos automaticamente no navegador
-- ✅ **Responsivo** - Funciona perfeitamente em dispositivos móveis, tablets e desktops
-- ✅ **Interface Moderna** - Design escuro e intuitivo
+## Alterações principais
 
-## 🚀 Como Usar
+- Renomeado o projeto para **Gerenciamento de Vendas**
+- Adicionada autenticação local (login.html + login.js)
+- Exposto "Receita Total" (soma dos preços de venda)
+- Lista de produtos vendidos na interface
+- Proteção de rota: exige login para acessar o app
 
-### 1. **Adicionar um Produto**
-   - Preencha o nome do produto
-   - Digite o preço de compra
-   - Digite o preço de venda
-   - Insira a quantidade inicial
-   - Clique em "Adicionar Produto"
+## Como usar (rápido)
 
-### 2. **Registrar uma Venda**
-   - Encontre o produto na lista
-   - Clique no botão "Vender"
-   - O sistema atualizará automaticamente o estoque e as estatísticas
+1. Abra `login.html` para registrar um usuário ou usar o usuário padrão.
+2. Usuário padrão criado automaticamente (somente se não houver usuários):
+   - Usuário: `admin`
+   - Senha: `admin123`
+3. Após login você será redirecionado para a aplicação (`index.html`).
 
-### 3. **Acompanhar Estatísticas**
-   - Visualize os lucros em diferentes períodos (Hoje, Semana, Mês, Ano, Total)
-   - Veja a quantidade total de itens em estoque
-   - Observe o gráfico mensal para tendências
+## Observações
+- Dados de produtos e vendas são armazenados em localStorage: `lopes_v7_produtos` e `lopes_v7_vendas`.
+- Usuários e sessão também ficam em localStorage: `lopes_v7_users`, `lopes_v7_session`.
 
-### 4. **Gerenciar Produtos**
-   - Cada produto mostra: preço de compra, preço de venda, margem de lucro, estoque, vendidos e lucro total
-   - Clique em "Deletar" para remover um produto
-
-## 📱 Compatibilidade
-
-- ✅ Chrome/Edge (v90+)
-- ✅ Firefox (v88+)
-- ✅ Safari (v14+)
-- ✅ Mobile browsers (iOS Safari, Chrome Mobile)
-
-## 💾 Armazenamento
-
-Todos os dados são salvos localmente no navegador usando **localStorage**. Seus dados persistem mesmo após fechar o navegador.
-
-## 🎨 Design
-
-- **Tema Escuro** - Reduz fadiga visual
-- **Gradient Moderno** - Cores profissionais e atrativas
-- **Responsivo** - Adapta-se a qualquer tamanho de tela
-- **Ícones Expressivos** - Facilita a visualização rápida das informações
-
-## 📊 Estatísticas Disponíveis
-
-1. **Lucro Hoje** - Total de lucro do dia atual
-2. **Lucro Semana** - Total dos últimos 7 dias
-3. **Lucro Mês** - Total do mês atual
-4. **Lucro Ano** - Total do ano atual
-5. **Lucro Total** - Somatório de todas as vendas
-6. **Estoque Total** - Quantidade de itens disponíveis
-
-## 🔧 Tecnologias
-
-- HTML5
-- CSS3 (com Flexbox e Grid)
-- JavaScript Vanilla
-- Canvas API (para gráficos)
-- LocalStorage API (para persistência)
-
-## 📝 Notas
-
-- Os dados são armazenados localmente e não são sincronizados com servidores
-- Para fazer backup dos dados, exporte o localStorage regularmente
-- A aplicação funciona completamente offline após o primeiro carregamento
-
-## 👨‍💼 Desenvolvido por
-
-**Lopes Imports** - Gestão de Vendas Profissional
+## Próximos passos recomendados
+- Mudar para Firebase Auth ou construir um backend com Express + bcrypt + JWT para produção.
 
 ---
 
-**Versão**: 7.0  
-**Última atualização**: 2026
+Versão: 7.1
+Última atualização: 2026

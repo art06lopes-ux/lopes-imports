@@ -2,6 +2,26 @@
 let produtos = JSON.parse(localStorage.getItem('lopes_v7_produtos') || '[]');
 let vendas = JSON.parse(localStorage.getItem('lopes_v7_vendas') || '[]');
 
+// Session helpers
+function getSession() {
+  try {
+    return JSON.parse(localStorage.getItem('lopes_v7_session')) || null;
+  } catch (e) { return null; }
+}
+
+function setSession(session) {
+  localStorage.setItem('lopes_v7_session', JSON.stringify(session));
+}
+
+function clearSession() {
+  localStorage.removeItem('lopes_v7_session');
+}
+
+function logout() {
+  clearSession();
+  window.location.href = 'login.html';
+}
+
 // Save data to localStorage
 function save() {
   localStorage.setItem('lopes_v7_produtos', JSON.stringify(produtos));
@@ -133,7 +153,7 @@ function render() {
   } else {
     produtos.forEach((p) => {
       estoque += p.qtd;
-      const margemLucro = ((p.venda - p.compra) / p.compra * 100).toFixed(1);
+      const margemLucro = ((p.venda - p.compra) / (p.compra || 1) * 100).toFixed(1);
 
       html += `
         <div class="produto">
@@ -156,10 +176,11 @@ function render() {
 
   // Calculate statistics
   const agora = new Date();
-  let hoje = 0, semana = 0, mes = 0, ano = 0, total = 0;
+  let hoje = 0, semana = 0, mes = 0, ano = 0, total = 0, receita = 0;
 
   vendas.forEach(v => {
     total += v.lucro;
+    receita += v.precoVenda;
 
     if (ehHoje(v.data)) hoje += v.lucro;
     if (mesmaSemana(v.data)) semana += v.lucro;
@@ -173,9 +194,38 @@ function render() {
   document.getElementById('mes').textContent = mes.toFixed(2);
   document.getElementById('ano').textContent = ano.toFixed(2);
   document.getElementById('total').textContent = total.toFixed(2);
+  document.getElementById('receita').textContent = receita.toFixed(2);
+
+  // Render sales list
+  renderVendasList();
 
   // Render chart
   renderGrafico();
+}
+
+// Render vendas list
+function renderVendasList() {
+  const container = document.getElementById('vendasList');
+  if (!container) return;
+
+  if (vendas.length === 0) {
+    container.innerHTML = '<p style="color:#b0b0b0; padding:8px;">Nenhuma venda registrada.</p>';
+    return;
+  }
+
+  let html = '<div style="display:grid; gap:8px;">';
+  vendas.slice().reverse().forEach(v => {
+    const d = new Date(v.data);
+    html += `
+      <div style="background:var(--input-bg); border:1px solid var(--border-color); padding:10px; border-radius:8px;">
+        <div style="font-weight:700; color:var(--accent-color);">${v.nomeProduto}</div>
+        <div style="color:var(--text-secondary); font-size:0.9em;">Vendido: R$ ${v.precoVenda.toFixed(2)} • Lucro: R$ ${v.lucro.toFixed(2)}</div>
+        <div style="color:var(--text-secondary); font-size:0.85em;">${d.toLocaleString()}</div>
+      </div>
+    `;
+  });
+  html += '</div>';
+  container.innerHTML = html;
 }
 
 // Render monthly chart
@@ -252,6 +302,18 @@ function atualizarRelogio() {
 
 // Initialize
 window.addEventListener('load', () => {
+  const session = getSession();
+  if (!session) {
+    window.location.href = 'login.html';
+    return;
+  }
+
+  // Show user
+  const userDisplay = document.getElementById('userDisplay');
+  if (userDisplay) userDisplay.textContent = `Usuário: ${session.username}`;
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) logoutBtn.addEventListener('click', logout);
+
   render();
   atualizarRelogio();
   setInterval(atualizarRelogio, 1000);
