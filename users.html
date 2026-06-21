@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gerenciar Usuários - Gerenciamento de Vendas</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .users-card { max-width:900px; margin:32px auto; padding:20px; }
+    .user-row { display:flex; justify-content:space-between; gap:12px; align-items:center; padding:10px; border-radius:8px; }
+    .user-actions { display:flex; gap:8px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <h1>🛡️ Painel de Usuários</h1>
+          <p class="subtitle">Gerencie contas (apenas admins)</p>
+        </div>
+        <div>
+          <button id="backBtn" class="btn">Voltar</button>
+          <button id="logoutBtn" class="btn" style="background:#b22222;">Sair</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <section class="card users-card">
+        <h2>Usuários</h2>
+        <div id="usersContainer" style="margin-top:12px; display:grid; gap:8px;"></div>
+        <div style="margin-top:16px;">
+          <h3>Registrar novo usuário</h3>
+          <div style="display:flex; gap:8px; margin-top:8px;">
+            <input id="newUsername" placeholder="Usuário" />
+            <input id="newEmail" placeholder="Email (opcional)" />
+            <input id="newPassword" type="password" placeholder="Senha" />
+            <button id="createUserBtn" class="btn btn-primary">Criar</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>&copy; 2026 Gerenciamento de Vendas</p>
+    </footer>
+  </div>
+
+  <script src="users.js"></script>
+</body>
+</html>

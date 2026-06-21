@@ -18,7 +18,7 @@ function createDefaultAdminIfNeeded() {
   const users = getUsers();
   if (users.length === 0) {
     hashPassword('admin123').then(h => {
-      users.push({ username: 'admin', email: 'admin@local', passwordHash: h, createdAt: new Date().toISOString() });
+      users.push({ username: 'admin', email: 'admin@local', passwordHash: h, role: 'admin', createdAt: new Date().toISOString() });
       saveUsers(users);
       console.log('Usuário admin criado');
     });
@@ -29,8 +29,10 @@ async function register(username, email, password) {
   if (!username || !password) return { ok: false, message: 'Preencha usuário e senha' };
   const users = getUsers();
   if (users.find(u => u.username === username)) return { ok:false, message: 'Usuário já existe' };
+  // do not allow registering as admin
+  const role = 'user';
   const hash = await hashPassword(password);
-  users.push({ username, email, passwordHash: hash, createdAt: new Date().toISOString() });
+  users.push({ username, email, passwordHash: hash, role, createdAt: new Date().toISOString() });
   saveUsers(users);
   return { ok:true };
 }

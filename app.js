@@ -22,6 +22,11 @@ function logout() {
   window.location.href = 'login.html';
 }
 
+// Users helper (to check roles)
+function getUsers() {
+  try { return JSON.parse(localStorage.getItem('lopes_v7_users') || '[]'); } catch(e) { return []; }
+}
+
 // Save data to localStorage
 function save() {
   localStorage.setItem('lopes_v7_produtos', JSON.stringify(produtos));
@@ -313,6 +318,19 @@ window.addEventListener('load', () => {
   if (userDisplay) userDisplay.textContent = `Usuário: ${session.username}`;
   const logoutBtn = document.getElementById('logoutBtn');
   if (logoutBtn) logoutBtn.addEventListener('click', logout);
+
+  // Show admin button if user has role admin
+  const users = getUsers();
+  const me = users.find(u => u.username === session.username) || null;
+  const adminBtn = document.getElementById('adminBtn');
+  if (adminBtn) {
+    if (me && me.role === 'admin') {
+      adminBtn.style.display = 'inline-block';
+      adminBtn.addEventListener('click', () => { window.location.href = 'users.html'; });
+    } else {
+      adminBtn.style.display = 'none';
+    }
+  }
 
   render();
   atualizarRelogio();
