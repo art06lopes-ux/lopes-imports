@@ -1,15 +1,10 @@
-const SUPABASE_URL = 'https://knrhtoexdpmlehdndjfv.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_wxOJ_KPfshvDmt2q94crYQ_r1ara4ta';
-
-const supabase = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-
+// Data Management - Isolado por usuário
 function getUserDataKey(key) {
-  const session = getSession();
-  if (!session) return key;
-  return `${session.username}_${key}`;
+const
+session = getSession();
+if (!session) return key;
+return
+'Stsession. username}_${key} ;
 }
 
 function getProdutos() {
