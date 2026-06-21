@@ -70,7 +70,82 @@ function deleteUser(username) {
   renderUsers();
 }
 
+function generateRandomPassword() {
+  return Math.random().toString(36).slice(2,10);
+}
+
+async function generateInvite() {
+  const desired = document.getElementById('inviteUsername').value.trim();
+  const email = document.getElementById('inviteEmail').value.trim();
+  let username = desired;
+  const users = getUsers();
+
+  // If no username provided, generate one
+  if (!username) {
+    username = 'user' + Math.floor(Math.random() * 9000 + 1000);
+  }
+
+  // Ensure uniqueness
+  let unique = username;
+  let i = 1;
+  while (users.find(u => u.username === unique)) {
+    unique = username + i;
+    i++;
+  }
+  username = unique;
+
+  const password = generateRandomPassword();
+  const hash = await hashPassword(password);
+
+  users.push({ username, email, passwordHash: hash, role: 'user', createdAt: new Date().toISOString() });
+  saveUsers(users);
+
+  // Build invite text
+  const appUrl = window.location.origin + window.location.pathname.replace(/[^/]*$/, '') + 'login.html';
+  const text = `Convite para acessar o Gerenciamento de Vendas:\n\nURL: ${appUrl}\nUsuário: ${username}\nSenha: ${password}\n\nInstruções: abra o link acima e entre com as credenciais fornecidas.`;
+
+  const output = document.getElementById('inviteOutput');
+  output.value = text;
+
+  // Refresh list
+  renderUsers();
+}
+
+function copyInvite() {
+  const output = document.getElementById('inviteOutput');
+  if (!output.value) { alert('Nenhum convite gerado.'); return; }
+  navigator.clipboard.writeText(output.value).then(() => {
+    alert('Convite copiado para a área de transferência');
+  }).catch(() => { alert('Falha ao copiar. Selecione e copie manualmente.'); });
+}
+
 // create user from admin panel
+async function createUserFromForm() {
+  const username = document.getElementById('newUsername').value.trim();
+  const email = document.getElementById('newEmail').value.trim();
+  const password = document.getElementById('newPassword').value;
+  if (!username || !password) { alert('Preencha usuário e senha'); return; }
+  const users = getUsers();
+  if (users.find(u => u.username === username)) { alert('Usuário já existe'); return; }
+  const h = await hashPassword(password);
+  users.push({ username, email, passwordHash: h, role: 'user', createdAt: new Date().toISOString() });
+  saveUsers(users);
+  document.getElementById('newUsername').value = '';
+  document.getElementById('newEmail').value = '';
+  document.getElementById('newPassword').value = '';
+  alert('Usuário criado com sucesso');
+  renderUsers();
+}
+
+// create user without copying (used by 'createFromInviteBtn')
+function createFromInvite() {
+  // If inviteOutput has content, we assume it was generated and user already created
+  const output = document.getElementById('inviteOutput');
+  if (!output.value) { alert('Nenhum convite gerado. Use "Gerar Convite" primeiro.'); return; }
+  alert('Usuário criado a partir do convite. Você pode copiar o texto e enviar para o membro.');
+}
+
+// DOM wiring
 document.addEventListener('DOMContentLoaded', () => {
   if (!requireAdmin()) return;
 
@@ -79,20 +154,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   renderUsers();
 
-  document.getElementById('createUserBtn').addEventListener('click', async () => {
-    const username = document.getElementById('newUsername').value.trim();
-    const email = document.getElementById('newEmail').value.trim();
-    const password = document.getElementById('newPassword').value;
-    if (!username || !password) { alert('Preencha usuário e senha'); return; }
-    const users = getUsers();
-    if (users.find(u => u.username === username)) { alert('Usuário já existe'); return; }
-    const h = await hashPassword(password);
-    users.push({ username, email, passwordHash: h, role: 'user', createdAt: new Date().toISOString() });
-    saveUsers(users);
-    document.getElementById('newUsername').value = '';
-    document.getElementById('newEmail').value = '';
-    document.getElementById('newPassword').value = '';
-    alert('Usuário criado com sucesso');
-    renderUsers();
-  });
+  document.getElementById('createUserBtn').addEventListener('click', createUserFromForm);
+  document.getElementById('generateInviteBtn').addEventListener('click', generateInvite);
+  document.getElementById('copyInviteBtn').addEventListener('click', copyInvite);
+  document.getElementById('createFromInviteBtn').addEventListener('click', createFromInvite);
 });
