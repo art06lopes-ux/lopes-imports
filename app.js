@@ -108,6 +108,11 @@ function vender(id) {
     data: new Date().toISOString()
   });
 
+  // Remove product if stock reaches zero
+  if (produto.qtd === 0) {
+    produtos = produtos.filter(p => p.id !== id);
+  }
+
   save();
 }
 
