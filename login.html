@@ -29,6 +29,16 @@
     </section>
   </div>
 
+  <script>
+    // Verificar se migração já foi feita
+    if (!localStorage.getItem('lopes_v7_migration_completed') && !localStorage.getItem('lopes_v7_migration_skipped')) {
+      const oldUsers = JSON.parse(localStorage.getItem('lopes_v7_users') || '[]');
+      if (oldUsers.length > 0) {
+        window.location.href = 'migration.html';
+      }
+    }
+  </script>
+
   <script type="module" src="login.js"></script>
 </body>
 </html>
