@@ -1,12 +1,9 @@
-import { auth, db } from './firebase-config.js';
-import { 
-  createUserWithEmailAndPassword,
-  signOut
-} from 'https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js';
+import { db } from './firebase-config.js';
 import {
   ref,
   set,
-  get
+  get,
+  push
 } from 'https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js';
 
 // ============ HELPERS ============
@@ -45,10 +42,16 @@ function getOldUsers() {
   }
 }
 
+// ============ GENERATE UID ============
+
+function generateUID() {
+  return 'user_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+}
+
 // ============ MIGRATION ============
 
 async function migrateUsers() {
-  log('Iniciando migração...', 'info');
+  log('Iniciando migração simplificada...', 'info');
   
   const oldUsers = getOldUsers();
   
@@ -71,44 +74,39 @@ async function migrateUsers() {
     try {
       log(`Migrando usuário ${i + 1}/${oldUsers.length}: ${user.username}...`, 'info');
 
-      // Criar um email único baseado no username
-      const email = user.email || `${user.username}@lopes-imports.local`;
+      // Gerar um UID único
+      const uid = generateUID();
       
-      // Gerar uma senha segura aleatória (não usaremos a hash antiga)
-      const tempPassword = Math.random().toString(36).slice(2, 15) + Math.random().toString(36).slice(2, 15);
-
-      // Criar usuário no Firebase Auth
-      const userCredential = await createUserWithEmailAndPassword(auth, email, tempPassword);
-      const uid = userCredential.user.uid;
-
-      log(`  ✓ Conta Firebase criada (UID: ${uid.substring(0, 8)}...)`, 'success');
-
-      // Salvar dados do usuário no Realtime Database
-      await set(ref(db, `users/${uid}`), {
+      // Preparar dados do usuário
+      const userData = {
         uid,
         username: user.username,
-        email,
+        email: user.email || `${user.username}@lopes-imports.local`,
         role: user.role || 'user',
+        passwordHash: user.passwordHash || '', // Mantém a senha antiga (hash)
         migratedFrom: 'localStorage',
         migratedAt: new Date().toISOString(),
         createdAt: user.createdAt || new Date().toISOString(),
         lastLogin: user.lastLogin || null
-      });
+      };
 
-      log(`  ✓ Dados salvos no Firebase`, 'success');
-      log(`  ⚠️  IMPORTANTE: Este usuário precisa resetar a senha!`, 'info');
+      // Salvar no Realtime Database
+      await set(ref(db, `users/${uid}`), userData);
+
+      log(`  ✓ Usuário "${user.username}" migrado com sucesso!`, 'success');
+      log(`  ✓ UID: ${uid.substring(0, 12)}...`, 'success');
 
       successCount++;
       updateStats(oldUsers.length, successCount);
 
     } catch (error) {
       errorCount++;
-      log(`  ✗ Erro ao migrar: ${error.message}`, 'error');
+      log(`  ✗ Erro ao migrar "${user.username}": ${error.message}`, 'error');
       updateStats(oldUsers.length, successCount);
     }
 
     // Aguardar um pouco entre requisições
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 300));
   }
 
   log(``, 'info');
@@ -122,9 +120,9 @@ async function migrateUsers() {
   completeMessage(`
     ✅ <strong>${successCount}</strong> usuário(s) foram migrados com sucesso!<br><br>
     ${errorCount > 0 ? `❌ ${errorCount} erro(s) ocorreram durante a migração.<br><br>` : ''}
-    <strong>⚠️ IMPORTANTE:</strong><br>
-    Todos os usuários migrados precisam <strong>resetar suas senhas</strong> no login.<br>
-    Você pode redefini-las no painel de administração antes de compartilhar as credenciais.
+    <strong>✅ BOAS NOTÍCIAS:</strong><br>
+    Seus usuários antigos agora estão no Firebase!<br>
+    Você pode fazer login com suas credenciais antigos normalmente.
   `);
 }
 
